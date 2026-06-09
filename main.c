@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 float vertices[] = {
@@ -88,17 +89,19 @@ void loadShaderFromFile(GLuint *shader_program, char *vert_path,
 }
 
 int main(int argc, char *argv[]) {
-  char *vert_path = "shaders/test.vert";
-  char *frag_path = "shaders/test.frag";
+  char vert_path[512] = "shaders/test.vert";
+  char frag_path[512] = "shaders/test.frag";
 
   char opt;
   while ((opt = getopt(argc, argv, "v:f:")) != -1) {
     switch (opt) {
     case 'v':
       printf("-v: %s\n", optarg);
+      strncpy(vert_path, optarg, 512);
       break;
     case 'f':
       printf("-f: %s\n", optarg);
+      strncpy(frag_path, optarg, 512);
       break;
     default:
       fprintf(stderr, "Invalid option!. Use -h to see all available options.");
