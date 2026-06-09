@@ -101,7 +101,8 @@ int main(int argc, char *argv[]) {
       printf("-f: %s\n", optarg);
       break;
     default:
-      break;
+      fprintf(stderr, "Invalid option!. Use -h to see all available options.");
+      exit(1);
     }
   }
 
