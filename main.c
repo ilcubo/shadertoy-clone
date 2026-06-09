@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 float vertices[] = {
     1.0f,  1.0f,  0.0f, // Top-Right
@@ -86,7 +87,24 @@ void loadShaderFromFile(GLuint *shader_program, char *vert_path,
   compileShader(shader_program, vert_src, frag_src);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  char *vert_path = "shaders/test.vert";
+  char *frag_path = "shaders/test.frag";
+
+  char opt;
+  while ((opt = getopt(argc, argv, "v:f:")) != -1) {
+    switch (opt) {
+    case 'v':
+      printf("-v: %s\n", optarg);
+      break;
+    case 'f':
+      printf("-f: %s\n", optarg);
+      break;
+    default:
+      break;
+    }
+  }
+
   if (!glfwInit()) {
     return 1;
   }
@@ -111,9 +129,6 @@ int main() {
   if (version_glad == 0) {
     fprintf(stderr, "ERROR[glad]: Failed to initialize OpenGL Context.\n");
   }
-
-  char *vert_path = "shaders/test.vert";
-  char *frag_path = "shaders/test.frag";
 
   GLuint vbo;
   glGenBuffers(1, &vbo);
