@@ -26,6 +26,12 @@ void errorCallback(int code, const char *description) {
 
 void loadFile(char **dest, char *file_path) {
   FILE *fptr = fopen(file_path, "r");
+
+  if (fptr == NULL) {
+    fprintf(stderr, "ERROR: Can't open the file at path %s", file_path);
+    exit(2);
+  }
+
   fseek(fptr, 0, SEEK_END);
 
   long size = ftell(fptr);
