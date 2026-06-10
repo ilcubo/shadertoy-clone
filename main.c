@@ -104,7 +104,11 @@ int main(int argc, char *argv[]) {
       strncpy(frag_path, optarg, 512);
       break;
     default:
-      fprintf(stderr, "Invalid option!. Use -h to see all available options.");
+      printf("Usage: shaderpg [-v <PATHNAME>] [-f <PATHNAME>]\n\n-v: Specify a "
+             "vertex shader source. Defaults to \"shaders/test.frag\".\n-f: "
+             "Specify "
+             "a fragment shader source. Defaults to \"shaders/test.vert\".\n"
+             "Paths must be less than 512 characters long.");
       exit(1);
     }
   }
