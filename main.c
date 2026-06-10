@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 float vertices[] = {
     1.0f,  1.0f,  0.0f, // Top-Right
@@ -24,6 +26,12 @@ void errorCallback(int code, const char *description) {
 
 void loadFile(char **dest, char *file_path) {
   FILE *fptr = fopen(file_path, "r");
+
+  if (fptr == NULL) {
+    fprintf(stderr, "ERROR: Can't open the file at path %s", file_path);
+    exit(2);
+  }
+
   fseek(fptr, 0, SEEK_END);
 
   long size = ftell(fptr);
@@ -86,7 +94,31 @@ void loadShaderFromFile(GLuint *shader_program, char *vert_path,
   compileShader(shader_program, vert_src, frag_src);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  char vert_path[512] = "shaders/test.vert";
+  char frag_path[512] = "shaders/test.frag";
+
+  char opt;
+  while ((opt = getopt(argc, argv, "v:f:")) != -1) {
+    switch (opt) {
+    case 'v':
+      printf("-v: %s\n", optarg);
+      strncpy(vert_path, optarg, 512);
+      break;
+    case 'f':
+      printf("-f: %s\n", optarg);
+      strncpy(frag_path, optarg, 512);
+      break;
+    default:
+      printf("Usage: shaderpg [-v <PATHNAME>] [-f <PATHNAME>]\n\n-v: Specify a "
+             "vertex shader source. Defaults to \"shaders/test.frag\".\n-f: "
+             "Specify "
+             "a fragment shader source. Defaults to \"shaders/test.vert\".\n"
+             "Paths must be less than 512 characters long.");
+      exit(1);
+    }
+  }
+
   if (!glfwInit()) {
     return 1;
   }
@@ -111,9 +143,6 @@ int main() {
   if (version_glad == 0) {
     fprintf(stderr, "ERROR[glad]: Failed to initialize OpenGL Context.\n");
   }
-
-  char *vert_path = "shaders/test.vert";
-  char *frag_path = "shaders/test.frag";
 
   GLuint vbo;
   glGenBuffers(1, &vbo);
