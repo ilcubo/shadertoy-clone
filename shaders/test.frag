@@ -4,6 +4,7 @@ in vec2 position;
 
 // uniform float u_time;
 // uniform vec2 mouse;
+// uniform bool u_mouse_pressed;
 uniform vec2 u_resolution;
 
 out vec4 frag_colour;
