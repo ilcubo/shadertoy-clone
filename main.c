@@ -130,6 +130,7 @@ int main(int argc, char *argv[]) {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_SAMPLES, 4);
+  glfwWindowHint(GLFW_SCALE_FRAMEBUFFER, GL_TRUE);
 
   window = glfwCreateWindow(1280, 720, "Shader Playground", NULL, NULL);
 
@@ -180,9 +181,15 @@ int main(int argc, char *argv[]) {
 
     glfwPollEvents();
 
+    float xscale, yscale;
+    glfwGetWindowContentScale(window, &xscale, &yscale);
+    printf("%f, %f\n", xscale, yscale);
+
     double mouse_x;
     double mouse_y;
     glfwGetCursorPos(window, &mouse_x, &mouse_y);
+    mouse_x *= xscale;
+    mouse_y *= yscale;
 
     int lmb_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
     int mouse_pressed_val = lmb_state == GLFW_PRESS ? 1 : 0;
