@@ -130,6 +130,7 @@ int main(int argc, char *argv[]) {
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_SAMPLES, 4);
+  glfwWindowHint(GLFW_SCALE_FRAMEBUFFER, GL_TRUE);
 
   window = glfwCreateWindow(1280, 720, "Shader Playground", NULL, NULL);
 
@@ -167,6 +168,8 @@ int main(int argc, char *argv[]) {
   // Get uniform locations
   GLint time_loc = glGetUniformLocation(shader_program, "u_time");
   GLint mouse_loc = glGetUniformLocation(shader_program, "u_mouse");
+  GLint mouse_pressed_loc =
+      glGetUniformLocation(shader_program, "u_mouse_pressed");
   GLint resolution_loc = glGetUniformLocation(shader_program, "u_resolution");
 
   while (!glfwWindowShouldClose(window)) {
@@ -178,9 +181,18 @@ int main(int argc, char *argv[]) {
 
     glfwPollEvents();
 
+    float xscale, yscale;
+    glfwGetWindowContentScale(window, &xscale, &yscale);
+    printf("%f, %f\n", xscale, yscale);
+
     double mouse_x;
     double mouse_y;
     glfwGetCursorPos(window, &mouse_x, &mouse_y);
+    mouse_x *= xscale;
+    mouse_y *= yscale;
+
+    int lmb_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+    int mouse_pressed_val = lmb_state == GLFW_PRESS ? 1 : 0;
 
     glViewport(0, 0, frame_w, frame_h);
     glClearColor(0.175, 0.175, 0.175, 1.0);
@@ -194,6 +206,9 @@ int main(int argc, char *argv[]) {
     }
     if (mouse_loc > -1) {
       glUniform2f(mouse_loc, (float)mouse_x, (float)mouse_y);
+    }
+    if (mouse_pressed_loc > -1) {
+      glUniform1i(mouse_pressed_loc, mouse_pressed_val);
     }
     if (resolution_loc > -1) {
       glUniform2f(resolution_loc, (float)frame_w, (float)frame_h);
