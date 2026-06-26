@@ -223,6 +223,8 @@ int main(int argc, char *argv[]) {
       // Get uniform locations
       time_loc = glGetUniformLocation(shader_program, "u_time");
       mouse_loc = glGetUniformLocation(shader_program, "u_mouse");
+      mouse_pressed_loc =
+          glGetUniformLocation(shader_program, "u_mouse_pressed");
       resolution_loc = glGetUniformLocation(shader_program, "u_resolution");
     }
   }
