@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include "shader.h"
+#include "texture.h"
 
 float vertices[] = {
     1.0f,  1.0f,  0.0f, // Top-Right
@@ -29,9 +30,10 @@ void errorCallback(int code, const char *description) {
 int main(int argc, char *argv[]) {
   char vert_path[512] = "shaders/test.vert";
   char frag_path[512] = "shaders/test.frag";
+  char texture_path[512] = "textures/texture.jpg";
 
   char opt;
-  while ((opt = getopt(argc, argv, "v:f:")) != -1) {
+  while ((opt = getopt(argc, argv, "v:f:t:")) != -1) {
     switch (opt) {
     case 'v':
       printf("-v: %s\n", optarg);
@@ -41,12 +43,16 @@ int main(int argc, char *argv[]) {
       printf("-f: %s\n", optarg);
       strncpy(frag_path, optarg, 512);
       break;
+    case 't':
+      printf("-t: %s\n", optarg);
+      strncpy(texture_path, optarg, 512);
+      break;
     default:
       printf("Usage: shaderpg [-v <PATHNAME>] [-f <PATHNAME>]\n\n-v: Specify a "
              "vertex shader source. Defaults to \"shaders/test.frag\".\n-f: "
              "Specify "
              "a fragment shader source. Defaults to \"shaders/test.vert\".\n"
-             "Paths must be less than 512 characters long.");
+             "Paths must be less than 512 characters long.\n");
       exit(1);
     }
   }
@@ -97,12 +103,18 @@ int main(int argc, char *argv[]) {
   GLuint shader_program;
   loadShaderFromFile(&shader_program, vert_path, frag_path);
 
+  // Load texture
+  GLuint texture_id;
+  loadTexture(&texture_id, texture_path);
+  glBindTexture(GL_TEXTURE_2D, texture_id);
+
   // Get uniform locations
   GLint time_loc = glGetUniformLocation(shader_program, "u_time");
   GLint mouse_loc = glGetUniformLocation(shader_program, "u_mouse");
   GLint mouse_pressed_loc =
       glGetUniformLocation(shader_program, "u_mouse_pressed");
   GLint resolution_loc = glGetUniformLocation(shader_program, "u_resolution");
+  GLint texture_loc = glGetUniformLocation(shader_program, "u_texture");
 
   while (!glfwWindowShouldClose(window)) {
     double curr_s = glfwGetTime();
@@ -115,7 +127,7 @@ int main(int argc, char *argv[]) {
 
     float xscale, yscale;
     glfwGetWindowContentScale(window, &xscale, &yscale);
-    printf("%f, %f\n", xscale, yscale);
+    // printf("%f, %f\n", xscale, yscale);
 
     double mouse_x;
     double mouse_y;
@@ -145,6 +157,9 @@ int main(int argc, char *argv[]) {
     if (resolution_loc > -1) {
       glUniform2f(resolution_loc, (float)frame_w, (float)frame_h);
     }
+    if (texture_loc > -1) {
+      glUniform1i(texture_loc, 0);
+    }
     // Draw
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -158,6 +173,7 @@ int main(int argc, char *argv[]) {
       mouse_pressed_loc =
           glGetUniformLocation(shader_program, "u_mouse_pressed");
       resolution_loc = glGetUniformLocation(shader_program, "u_resolution");
+      texture_loc = glGetUniformLocation(shader_program, "u_texture");
     }
   }
 
