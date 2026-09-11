@@ -16,7 +16,7 @@ void loadTexture(GLuint *texture_id, char *texture_path) {
                   GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   if (data == NULL) {
-    fprintf(stderr, "ERROR: Failed to load texture");
+    fprintf(stderr, "ERROR: Failed to load texture\n");
   } else {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                  GL_UNSIGNED_BYTE, data);
