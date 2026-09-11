@@ -30,9 +30,10 @@ void errorCallback(int code, const char *description) {
 int main(int argc, char *argv[]) {
   char vert_path[512] = "shaders/test.vert";
   char frag_path[512] = "shaders/test.frag";
+  char texture_path[512] = "textures/texture.jpg";
 
   char opt;
-  while ((opt = getopt(argc, argv, "v:f:")) != -1) {
+  while ((opt = getopt(argc, argv, "v:f:t:")) != -1) {
     switch (opt) {
     case 'v':
       printf("-v: %s\n", optarg);
@@ -42,12 +43,16 @@ int main(int argc, char *argv[]) {
       printf("-f: %s\n", optarg);
       strncpy(frag_path, optarg, 512);
       break;
+    case 't':
+      printf("-t: %s\n", optarg);
+      strncpy(texture_path, optarg, 512);
+      break;
     default:
       printf("Usage: shaderpg [-v <PATHNAME>] [-f <PATHNAME>]\n\n-v: Specify a "
              "vertex shader source. Defaults to \"shaders/test.frag\".\n-f: "
              "Specify "
              "a fragment shader source. Defaults to \"shaders/test.vert\".\n"
-             "Paths must be less than 512 characters long.");
+             "Paths must be less than 512 characters long.\n");
       exit(1);
     }
   }
@@ -100,7 +105,7 @@ int main(int argc, char *argv[]) {
 
   // Load texture
   GLuint texture_id;
-  loadTexture(&texture_id, "textures/texture.jpg");
+  loadTexture(&texture_id, texture_path);
   glBindTexture(GL_TEXTURE_2D, texture_id);
 
   // Get uniform locations
