@@ -21,7 +21,7 @@ void loadFile(char **dest, char *file_path) {
   fclose(fptr);
 }
 
-void compileShader(GLuint *shader_program, char *vert_src, char *frag_src) {
+void compileShader(GLuint *shader_program, const GLchar *vert_src, const GLchar *frag_src) {
   int success;
   char info_log[512];
 
